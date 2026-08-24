@@ -9,13 +9,13 @@ A containerized Laravel development environment using Docker/Podman.
 
 ## Getting Started
 
-### 1. Clone the repository
+#### 1. Clone the repository
 
-### 2. Set nescessary config values in the `run` file.
+#### 2. Set nescessary config values in the `run` file.
 
-### 3. Run the application
+#### 3. Run the application
 
-### 4. The Laravel folder is inside the generated /laravel folder
+#### 4. The Laravel folder is inside the generated /laravel folder
 
 > [!TIP]
 > You can delete the /laravel folder and the `run` will auto generate it again
