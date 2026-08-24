@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# -- config values --
+export APP_PORT=8000
+export FORWARD_DB_PORT=3306
+export ADMIN_PORT=8080
+
+# Generate unique instance ID
+INSTANCE_ID=$(uuidgen | cut -c1-8)
+export INSTANCE_ID
+
+# dynamic values (do not touch)
+export UserID=$(id -u)
+export GroupID=$(id -g)
+
+mkdir -p laravel
+sudo chmod -R 777 laravel/
+
+if [ ! -f "laravel/composer.json" ]; then
+  docker compose -f docker/compose.yml run --rm laravel-app sh -c 'composer create-project laravel/laravel . && composer install'
+else
+  echo "Laravel already installed, skipping..."
+fi
+
+# Finally run FrankenPHP with unique project name
+docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" up -d
+
+trap 'docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" down && exit' INT TERM EXIT
+
+# Open zsh in the container
+docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" exec laravel-app /bin/zsh
+
+while :; do 
+  docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" logs --tail 10 -f
+done

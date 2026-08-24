@@ -1,0 +1,59 @@
+services:
+  laravel-app:
+    build:
+      context: .
+      dockerfile: laravel.df
+    user: "${UserID}:${GroupID}"
+    ports:
+      - "${APP_PORT:-8000}:80"
+    environment:
+      SERVER_NAME: ":80"
+      DB_CONNECTION: "${DB_CONNECTION:-mariadb}"
+      DB_HOST: "${DB_HOST:-mariadb}"
+      DB_PORT: "${DB_PORT:-3306}"
+      DB_DATABASE: "${DB_DATABASE:-laravel}"
+      DB_USERNAME: "${DB_USERNAME:-sail}"
+      DB_PASSWORD: "${DB_PASSWORD:-secretpassword}"
+    volumes:
+      - ../laravel:/app:Z
+    networks:
+      - laravel
+
+  mariadb:
+    image: 'mariadb:11'
+    container_name: mariadb
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-secretpassword}'
+      MYSQL_DATABASE: '${DB_DATABASE:-laravel}'
+      MYSQL_USER: '${DB_USERNAME:-sail}'
+      MYSQL_PASSWORD: '${DB_PASSWORD:-secretpassword}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'sail-mariadb:/var/lib/mysql'
+    networks:
+      - laravel
+
+  phpmyadmin:
+    image: 'phpmyadmin:latest'
+    container_name: phpmyadmin
+    ports:
+      - '${ADMIN_PORT:-8080}:80'
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: '${DB_USERNAME:-sail}'
+      PMA_PASSWORD: '${DB_PASSWORD:-secretpassword}'
+      PMA_ARBITRARY: 1
+      UID: '${UID:-1000}'
+      GID: '${GID:-1000}'
+    networks:
+      - laravel
+
+volumes:
+  sail-mariadb:
+    driver: local
+
+networks:
+  laravel:
+    driver: bridge
