@@ -1,32 +1,40 @@
 #!/bin/bash
+set -euo pipefail
 
-# -- config values --
+
+# env values - modify here 
 export APP_PORT=8000
 export FORWARD_DB_PORT=3306
 export ADMIN_PORT=8080
 
-# Generate unique instance ID
-INSTANCE_ID=$(uuidgen | cut -c1-8)
-export INSTANCE_ID
+# enable internal database (php-myadmin + mysql) 
+export INTERNAL_DB=false
 
-# dynamic values (do not touch)
 export UserID=$(id -u)
 export GroupID=$(id -g)
+INSTANCE_ID=$(uuidgen | cut -c1-8)
+export INSTANCE_ID
+PROJECT_NAME="laravel-$INSTANCE_ID"
+COMPOSE="docker compose -f docker/compose.yml -p $PROJECT_NAME"
+
+# Clean up any stale laravel-app containers from previous runs
+docker ps -a --filter "name=laravel-app" -q | xargs -r docker rm -f
 
 mkdir -p laravel
-sudo chmod -R 777 laravel/
 
 if [ ! -f "laravel/composer.json" ]; then
-  docker compose -f docker/compose.yml run --rm laravel-app sh -c 'composer create-project laravel/laravel . && composer install'
+  $COMPOSE run --rm laravel-app sh -c 'composer create-project laravel/laravel . && composer install'
 else
   echo "Laravel already installed, skipping..."
 fi
 
-# Finally run FrankenPHP with unique project name
-docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" up -d
+if [ "$INTERNAL_DB" = "true" ]; then
+  # remove or comment out the service, or use a separate compose file
+  $COMPOSE --profile enabled up -d
+else
+  $COMPOSE up -d
+fi
 
-trap 'docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" down && exit' INT TERM EXIT
+trap '$COMPOSE --profile enabled down' EXIT INT TERM
 
-# Open zsh in the container
-docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" exec -it laravel-app /bin/zsh
-
+$COMPOSE exec -it laravel-app /bin/zsh

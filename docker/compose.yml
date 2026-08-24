@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: laravel.df
     user: "${UserID}:${GroupID}"
+    container_name: laravel-app-${INSTANCE_ID}
     ports:
       - "${APP_PORT:-8000}:80"
     environment:
@@ -21,7 +22,7 @@ services:
 
   mariadb:
     image: 'mariadb:11'
-    container_name: mariadb
+    container_name: mariadb-${INSTANCE_ID}
     ports:
       - '${FORWARD_DB_PORT:-3306}:3306'
     environment:
@@ -34,10 +35,12 @@ services:
       - 'sail-mariadb:/var/lib/mysql'
     networks:
       - laravel
+    profiles:
+      - "${INTERNAL_DB:+enabled}"
 
   phpmyadmin:
     image: 'phpmyadmin:latest'
-    container_name: phpmyadmin
+    container_name: phpmyadmin-${INSTANCE_ID}
     ports:
       - '${ADMIN_PORT:-8080}:80'
     environment:
@@ -49,6 +52,8 @@ services:
       GID: '${GID:-1000}'
     networks:
       - laravel
+    profiles:
+      - "${INTERNAL_DB:+enabled}"
 
 volumes:
   sail-mariadb:
