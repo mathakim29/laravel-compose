@@ -20,6 +20,7 @@ services:
     networks:
       - laravel
 
+
   mariadb:
     image: 'mariadb:11'
     container_name: mariadb-${INSTANCE_ID}
@@ -37,6 +38,7 @@ services:
       - laravel
     profiles:
       - "${INTERNAL_DB:+enabled}"
+    
 
   phpmyadmin:
     image: 'phpmyadmin:latest'
@@ -57,7 +59,7 @@ services:
 
 volumes:
   sail-mariadb:
-    driver: local
+    name: data-mariadb-${INSTANCE_ID}
 
 networks:
   laravel:
