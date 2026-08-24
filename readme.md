@@ -9,10 +9,7 @@ A containerized Laravel development environment using Docker/Podman.
 
 ## Getting Started
 
-#### 1. Clone the repository or create template 
-```bash
-
-```
+#### 1. Clone the repository 
 
 #### 2. Set nescessary config values in the `run` file.
 
