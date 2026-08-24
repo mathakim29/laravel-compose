@@ -9,7 +9,10 @@ A containerized Laravel development environment using Docker/Podman.
 
 ## Getting Started
 
-#### 1. Clone the repository
+#### 1. Clone the repository or create template 
+```bash
+git clone --depth 1 git@github.com:mathakim29/laravel-compose.git new-project && cd new-project && rm -rf .git && git init && git add . && git commit -m "Initial commit"
+```
 
 #### 2. Set nescessary config values in the `run` file.
 
