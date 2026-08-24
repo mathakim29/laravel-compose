@@ -1,0 +1,12 @@
+#!/bin/bash
+
+read -p "Project name: " NAME
+
+git clone --depth 1 git@github.com:mathakim29/laravel-compose.git "$NAME"
+cd "$NAME" || exit
+rm -rf .git
+git init
+git add .
+git commit -m "Initial commit"
+
+echo "✅ Done! cd $NAME"
