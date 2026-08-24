@@ -28,8 +28,5 @@ docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" up -d
 trap 'docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" down && exit' INT TERM EXIT
 
 # Open zsh in the container
-docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" exec laravel-app /bin/zsh
+docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" exec -it laravel-app /bin/zsh
 
-while :; do 
-  docker compose -f docker/compose.yml -p "laravel-$INSTANCE_ID" logs --tail 10 -f
-done
