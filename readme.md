@@ -1,4 +1,4 @@
-# Laravel Docker Compose Bootstrap
+# Laravel Compose Bootstrap
 
 A containerized Laravel development environment using Docker/Podman.
 
@@ -13,12 +13,9 @@ A containerized Laravel development environment using Docker/Podman.
 
 #### 2. Set nescessary config values in the `run` file.
 
-#### 3. Run the application
+#### 3. Run the application: `docker compose up`
 
-#### 4. The Laravel folder is inside the generated /laravel folder
 
-> [!TIP]
-> You can delete the /laravel folder and the `run` will auto generate it again
 
 
 

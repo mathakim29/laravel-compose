@@ -1,5 +1,0 @@
-FROM dunglas/frankenphp:1.4-php8.4-alpine
-WORKDIR /app
-RUN apk add --no-cache bash git openssh-client nodejs npm zsh
-RUN install-php-extensions pdo_mysql gd intl zip opcache
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

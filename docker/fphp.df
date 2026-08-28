@@ -1,0 +1,20 @@
+# Get Composer binary
+FROM composer:latest AS composer
+
+FROM dunglas/frankenphp:1-php8.4-alpine
+
+# Copy Composer into the FrankenPHP image
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+RUN install-php-extensions \
+    pdo_pgsql \
+    pgsql \
+    mbstring \
+    openssl \
+    bcmath \
+    ctype \
+    fileinfo \
+    tokenizer \
+    xml
+
+WORKDIR /app
