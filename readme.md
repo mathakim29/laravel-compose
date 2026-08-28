@@ -13,7 +13,10 @@ A containerized Laravel development environment using Docker/Podman.
 
 #### 2. Set nescessary config values in the `run` file.
 
-#### 3. Run the application: `docker compose up`
+#### 3. Run the application: 
+```bash
+UID=$(id -u) GID=$(id -g) docker compose up
+```
 
 
 
